@@ -91,7 +91,7 @@ def compile(path, compiler="gcc-9", oname:str="main", keys:tuple=["-Wall", "-Wer
     keys.extend(["-o", oname.strip()])
     
 
-    print(keys)
+    #print(keys)
 
     cmp_data = sb.call(keys)
     
@@ -127,13 +127,27 @@ def beuatiful_print(test_data:dict):
         if test == "BUILD":
             print(f"{test:>7}   ........   {result:>7}")
         if test == "TESTS":
-            print(f"{test:>7}   ........   {result:>7}")
+            print(f"{test:>7}   ........   {result[0]:>7} ({result[1]} : {result[2]})")
 
-def test():
-    test_data = dict()
-
-
-    pass
+def unittest(exec_path:str, test_path:str):
+    test_data = parse_test_file(test_path)
+    number_of_tests = len(test_data)
+    test_list = []
+    for i in range(len(test_data)):
+        real_data = exec_file(exec_path, test_data[i]["input"])
+        
+        # print(real_data["coll_data"], get_numbers(test_data[i]["output"]))
+        # print(real_data["exit_code"], int(test_data[i]["exitcode"]))
+        
+        if (real_data["coll_data"] != get_numbers(test_data[i]["output"]) or
+            real_data["exit_code"] != int(test_data[i]["exitcode"])):
+            test_list.append(0)
+        else:
+            test_list.append(1)
+    
+    if (sum(test_list) == number_of_tests):
+        return (PASSED, sum(test_list), number_of_tests)
+    return (FAILED, sum(test_list), number_of_tests)
 
 def init_tests(args):
     test_data = {}
@@ -143,15 +157,14 @@ def init_tests(args):
     if test_data["BUILD"] == FAILED:
         return
 
-    a = exec_file(args.execpath[:-2], "2 2")
-    test_data["TESTS"] = PASSED
-    print(a)
+    tests = unittest(args.execpath[:-2], args.testpath)
+    test_data["TESTS"] = tests
     beuatiful_print(test_data)
 
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Test system 0.1.0")
+    parser = argparse.ArgumentParser(description="Test system 0.2.0")
     subparser = parser.add_subparsers()
 
     test = subparser.add_parser("test", help="execute file and check if it corrects with tests.")
