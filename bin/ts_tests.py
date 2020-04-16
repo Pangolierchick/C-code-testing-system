@@ -13,13 +13,13 @@ def unittest(exec_path:str, test_path:str):
     
     for i in range(len(test_data)):
         real_data = exec_file(exec_path, test_data[i]["input"])
-        
-        # print(real_data["coll_data"], get_numbers(test_data[i]["output"]))
-        # print(real_data["exitcode"], int(test_data[i]["exitcode"]))
 
         test_output = ts_text.get_numbers(test_data[i]["output"])
         test_exitcode = int(test_data[i]["exitcode"]) > 0
-        
+
+        # print("OUTPUT: ", real_data["coll_data"], test_output)
+        # print("EXITCODE: ", real_data["exitcode"], test_exitcode)
+
         if (real_data["coll_data"] != test_output or
             (real_data["exitcode"] != test_exitcode)):
             test_list.append(0)
@@ -48,7 +48,9 @@ def exec_file(path:str, data=None, ftype="int") -> dict:
     elif ftype == "str":
         pr_vals["coll_data"] = ts_text.get_strings(pr.stdout)
 
-    pr_vals["exitcode"] = pr.returncode
+    # Because we dont interest in specific exit code, we need
+    # to know only exit status, is it succesful or failure
+    pr_vals["exitcode"] = pr.returncode > 0
 
     return pr_vals
 
