@@ -51,7 +51,7 @@ def init_tests(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Test system 0.3.0")
+    parser = argparse.ArgumentParser(description="Test system 0.3.1")
     subparser = parser.add_subparsers()
 
     test = subparser.add_parser("test", help="execute file and check if it corrects with tests.")

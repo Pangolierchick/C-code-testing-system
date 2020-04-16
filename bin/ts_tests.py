@@ -15,10 +15,13 @@ def unittest(exec_path:str, test_path:str):
         real_data = exec_file(exec_path, test_data[i]["input"])
         
         # print(real_data["coll_data"], get_numbers(test_data[i]["output"]))
-        # print(real_data["exit_code"], int(test_data[i]["exitcode"]))
+        # print(real_data["exitcode"], int(test_data[i]["exitcode"]))
+
+        test_output = ts_text.get_numbers(test_data[i]["output"])
+        test_exitcode = int(test_data[i]["exitcode"]) > 0
         
-        if (real_data["coll_data"] != ts_text.get_numbers(test_data[i]["output"]) or
-            real_data["exitcode"] != int(test_data[i]["exitcode"])):
+        if (real_data["coll_data"] != test_output or
+            (real_data["exitcode"] != test_exitcode)):
             test_list.append(0)
         else:
             test_list.append(1)
