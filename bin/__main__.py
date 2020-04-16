@@ -6,7 +6,7 @@ import ts_tests
 import ts_text
 from time import perf_counter
 
-MY_VERSION = "0.4.0"
+MY_VERSION = "0.5.0"
 PASSED = "\x1b[1;32;40mPASSED\033[0m"
 FAILED = "\x1b[1;31;40mFAILED\033[0m"
 ERROR = "\x1b[1;31;40mERROR\033[0m"
@@ -57,9 +57,18 @@ def init_tests(args):
         test_data["TESTS"] = tests
 
     result_print(test_data, args.quite)
+
+    if args.style:
+        # print("\t\tSTARTING STYLE TEST")
+        style = ts_tests.style_test(os.path.abspath("../styleutil/CodeChecker"), cpath)
+        print(f"STYLE\t\t........\t\t{style}")
+
+
     if args.debug:
         end = perf_counter()
         print(f"Elapsed time is {end - start:.3}s")
+    
+
 
 
 
@@ -70,13 +79,16 @@ def main():
     test = subparser.add_parser("test", help="execute file and check if it corrects with tests.")
     test.add_argument("-pt", "--testpath", help="This is path to test txt file.", default="./tests.txt", type=str)
     test.add_argument("-pc", "--cpath", help="This is path to executable file.", default="./main.c", type=str)
-    test.add_argument("-s", "--style", help="Check programm with bmstu style utility", action="store_true")
+    test.add_argument("--style", help="Check programm with bmstu style utility", action="store_true")
     test.add_argument("-q", "--quite", help="print less info, real data and test data and etc.", action="store_true")
     test.add_argument("--debug", help="Print debug info (you should use is only for debug puropuses)", action="store_true")
     test.set_defaults(func=init_tests)
 
     args = parser.parse_args()
-    args.func(args)
+    try:
+        args.func(args)
+    except Exception as e:
+        print(f"Error {e} type: -h for help message")
 
 if __name__ == "__main__":
     main()

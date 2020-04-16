@@ -58,6 +58,11 @@ class TestList():
         return len(self.tests_list)
 
 
+def style_test(spath:str, cpath:str):
+    style = sb.call([spath, cpath])
+    result = FAILED if style else PASSED
+    return result
+    
 
 def unittest(exec_path:str, test_path:str):
     
