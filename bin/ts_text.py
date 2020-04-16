@@ -1,5 +1,12 @@
 import os
 
+def getTitle(test:str) -> str:
+    """
+    getting str like #test TITLE
+    return TITLE
+    """
+    return test[5:].strip()
+
 def parse_test_block(text, pos):
     test_dict = {}
     key = None
@@ -46,6 +53,7 @@ def parse_test_file(path:str):
         if "#test" in file[line]:
             parsed_block = parse_test_block(file, line)
             if parsed_block is not None:
+                parsed_block["title"] = getTitle(file[line])
                 tests_list.append(parsed_block)
     
     return tests_list

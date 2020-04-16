@@ -4,27 +4,37 @@ import argparse
 import subprocess as sb
 import ts_tests
 import ts_text
+from time import perf_counter
 
+MY_VERSION = "0.4.0"
 PASSED = "\x1b[1;32;40mPASSED\033[0m"
 FAILED = "\x1b[1;31;40mFAILED\033[0m"
 ERROR = "\x1b[1;31;40mERROR\033[0m"
 
-def printFailed(tests:list):
-    for num, test in enumerate(tests):
-        if not test:
-            print(f"\tTEST #{num + 1}\t\t\t\t{FAILED}")
+def verbosePrint(tests:list):
+    for num, test in enumerate(tests.tests_list):
+        if not test.test_status:
+            rstatus = "SUCCESS" if test.real_exit_status else "FAILED"
+            tstatus = "SUCCESS" if test.test_exit_status else "FAILED"
+            print(f"\t\x1b[1;35;40mTEST {test.title}\033[0m\t\t\t\t{FAILED}")
+            print(f"Real values: {test.real_values}")
+            print(f"Expected values: {test.test_values}")
+            print(f"Real exit status: {rstatus}")
+            print(f"Expected exit status: {tstatus}")
 
-def beuatiful_print(test_data:dict):
-    for test, result in test_data.items():
-        if test == "BUILD":
-            print(f"{test:>7}\t\t........\t\t{result:>7}")
-        if test == "TESTS":
-            print(f"{test:>7}\t\t........\t\t{result[0]:>7} ({sum(result[1])} : {result[2]})")
-            if result[0] == FAILED:
-                printFailed(result[1])
+
+def result_print(test_data:dict, quite:bool):
+    build = test_data['BUILD']
+    unittests = test_data['TESTS']
+    print(f"BUILD\t\t........\t\t{build}")
+    print(f"TESTS\t\t........\t\t{unittests.test_status} ({unittests.getSuccessful()} : {unittests.getLen()})")
+    if (unittests.test_status == FAILED and not quite):
+        verbosePrint(unittests)
 
 
 def init_tests(args):
+    if args.debug:
+        start = perf_counter()
     test_data = {"BUILD": FAILED}
 
     cpath = os.path.abspath(args.cpath)
@@ -46,17 +56,23 @@ def init_tests(args):
         tests = ts_tests.unittest(compiledpath, testfilepath)
         test_data["TESTS"] = tests
 
-    beuatiful_print(test_data)
+    result_print(test_data, args.quite)
+    if args.debug:
+        end = perf_counter()
+        print(f"Elapsed time is {end - start:.3}s")
 
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Test system 0.3.1")
+    parser = argparse.ArgumentParser(description=f"TestSystem {MY_VERSION}", add_help=True, prog="Test system")
     subparser = parser.add_subparsers()
 
     test = subparser.add_parser("test", help="execute file and check if it corrects with tests.")
-    test.add_argument("-pt", "--testpath", help="This is path to test txt file.", default="./tests.txt")
-    test.add_argument("-pc", "--cpath", help="This is path to executable file.", default="./main.c")
+    test.add_argument("-pt", "--testpath", help="This is path to test txt file.", default="./tests.txt", type=str)
+    test.add_argument("-pc", "--cpath", help="This is path to executable file.", default="./main.c", type=str)
+    test.add_argument("-s", "--style", help="Check programm with bmstu style utility", action="store_true")
+    test.add_argument("-q", "--quite", help="print less info, real data and test data and etc.", action="store_true")
+    test.add_argument("--debug", help="Print debug info (you should use is only for debug puropuses)", action="store_true")
     test.set_defaults(func=init_tests)
 
     args = parser.parse_args()
