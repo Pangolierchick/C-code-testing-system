@@ -41,9 +41,4 @@ Or if you are using [compiled version](https://yadi.sk/d/v7Ym9MrUZ6SJIg) (it wor
 TestSystem test -pt PATH_TO_TESTS -pc PATH_TO_C_FILE
 ```
 
-# How it looks like
-
-
-![Example](https://ibb.co/R9MhsXP)
-
 
