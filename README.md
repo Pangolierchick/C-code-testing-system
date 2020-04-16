@@ -25,16 +25,25 @@ None
 ```
 
 Test block starts with ```#test``` and then you can see blocks ```input```, ```output``` and ```exitcode```. In that blocks you writing your tests.
+You can write input, output, exitcode blocks in whatever order you want. Also if your programm outputs nothing you can write either None or " " (space)
 
 # How to test
 
 So to test code you need to exec testsystem via console like:
 
 ```bash
-python3 ./TestSystem.py test -pt PATH_TO_TESTS -pe PATH_TO_C_FILE
+python3 ./bin/__main__.py test -pt PATH_TO_TESTS -pc PATH_TO_C_FILE
 ```
 
+Or if you are using [compiled version](https://yadi.sk/d/v7Ym9MrUZ6SJIg) (it works under macos Catalina, so write issue if you had some problems)
+
+```bash
+TestSystem test -pt PATH_TO_TESTS -pc PATH_TO_C_FILE
+```
+
+# How it looks like
 
 
+![Example](https://ibb.co/R9MhsXP)
 
 
