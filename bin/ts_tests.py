@@ -1,3 +1,5 @@
+import os
+import sys
 import subprocess as sb
 import ts_text
 
@@ -5,6 +7,9 @@ PASSED = "\x1b[1;32;40mPASSED\033[0m"
 FAILED = "\x1b[1;31;40mFAILED\033[0m"
 
 class Test():
+    '''
+    Using this class as struct.
+    '''
     real_values = None
     test_values = None
     real_exit_status = None
@@ -64,23 +69,33 @@ def style_test(spath:str, cpath:str):
     return result
     
 
-def unittest(exec_path:str, test_path:str):
-    
+def unittest(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None, key=None):
+    print(test_type, quite_ecode, key)
     test_data = ts_text.parse_test_file(test_path)
     number_of_tests = len(test_data)
 
     test_list = []
     
     for i in range(len(test_data)):
-        real_data = exec_file(exec_path, test_data[i]["input"])
+        real_data = exec_file(exec_path, test_data[i]["input"], ftype=test_type, key=key)
 
-        test_output = ts_text.get_numbers(test_data[i]["output"])
+        if test_type == "int":
+            test_output = ts_text.get_numbers(test_data[i]["output"])
+        elif test_type == "str":
+            test_output = ts_text.get_strings_from_tests(test_data[i]["output"])
+
         test_exitcode = int(test_data[i]["exitcode"])
+
+        if not quite_ecode:
+            # If quite_ecode == True we dont mansion on specific exit value
+            # We interested only in exit statue - it can be either passed or failed
+            real_data["exitcode"] = real_data["exitcode"] > 0
+            test_exitcode = test_exitcode > 0
 
         test = Test(real_data["coll_data"], 
                     test_output, 
-                    real_data["exitcode"] > 0, 
-                    test_exitcode > 0, 
+                    real_data["exitcode"], 
+                    test_exitcode, 
                     test_data[i]["title"])
 
         test_list.append(test)
@@ -88,7 +103,7 @@ def unittest(exec_path:str, test_path:str):
     Tests = TestList(test_list)
     return Tests
 
-def exec_file(path:str, data=None, ftype="int") -> dict:
+def exec_file(path:str, data=None, ftype="int", key=None) -> dict:
     '''
     path to exec. file
     type: "int" or "str"
@@ -103,32 +118,36 @@ def exec_file(path:str, data=None, ftype="int") -> dict:
         pr_vals["coll_data"] = ts_text.get_numbers(pr.stdout)
 
     elif ftype == "str":
-        pr_vals["coll_data"] = ts_text.get_strings(pr.stdout)
+        pr_vals["coll_data"] = ts_text.get_strings_from_exec(pr.stdout, key)
 
     pr_vals["exitcode"] = pr.returncode
 
     return pr_vals
 
-def compile(path, compiler="gcc-9", oname:str="main", keys:tuple=None, suppress=False):
+def compile(wdir, flist, compiler="gcc-9", oname:str=None, keys:tuple=None, suppress=False, debug=False):
     '''
     compiling file with given args
-    return None
+    return PASSED or FAILED depending on build result
     '''
 
     if keys is None:
-        keys = ["-Wall", "-Werror", "-Wextra", "-pedantic"]
+        keys = ["-Wall", "-Wextra", "-pedantic"]
     
     RESULT = PASSED
     
     
-    keys.insert(0, path)
+    for file in flist:
+        keys.insert(0, os.path.join(wdir, file))
+
     keys.insert(0, compiler)
     
     if suppress:
         pass
         #keys.insert(2, " 2> /dev/null")
-    
-    keys.extend(["-o", oname.strip()])
+    keys.extend(["-o", oname])
+
+    if debug:
+        print(f"[debug] Starting build, keys: {keys}")
 
     comp_data = sb.call(keys)
     

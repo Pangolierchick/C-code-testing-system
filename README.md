@@ -35,7 +35,7 @@ So to test code you need to exec testsystem via console like:
 python3 ./bin/__main__.py test -pt PATH_TO_TESTS -pc PATH_TO_C_FILE
 ```
 
-Or if you are using [compiled version](https://yadi.sk/d/v7Ym9MrUZ6SJIg) (it was tested under macos Catalina, so write issue if you had some problems)
+Or if you are using [compiled version](https://yadi.sk/d/kHy5cWYrlKmC8w) (it was tested under macos Catalina, so write issue if you had some problems)
 
 ```bash
 chmod +x ./TestSystem - you have to do it only once

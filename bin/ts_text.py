@@ -59,8 +59,21 @@ def parse_test_file(path:str):
     return tests_list
     
 
-def get_strings(string:str) -> list:
-    pass
+def get_strings_from_tests(string:str) -> list:
+    string_list = []
+    for word in string.split():
+        if word != "None":
+            string_list.append(word)
+    return string_list
+
+
+def get_strings_from_exec(string:str, keyword):
+    out_list = []
+    for word in string.split("\n"):
+        if word.find(keyword) != -1:
+            out_list.append(word.replace(keyword, "").strip())
+    return out_list
+
 
 def get_numbers(string:str) -> list:
     """
