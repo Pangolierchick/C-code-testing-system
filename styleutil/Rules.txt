@@ -1,0 +1,446 @@
+﻿// Rule 1
+# T= T_FOR_OPEN_BRACKET TA= !T_TERMINATOR
+{
+SpacesBefore=1
+SpacesAfter=0
+LinesBefore=0
+LinesAfter=0
+}
+
+// Rule 2
+# T= T_FOR_OPEN_BRACKET TA= T_TERMINATOR
+{
+SpacesBefore=1
+SpacesAfter=1
+LinesBefore=0
+LinesAfter=0
+}
+
+// Rule 3
+# T= T_FOR_CLOSE_BRACKET TB= !T_TERMINATOR
+{
+SpacesBefore=0
+LinesBefore=0
+}
+
+// Rule 4
+# T= T_FOR_CLOSE_BRACKET TB= T_TERMINATOR
+{
+SpacesBefore=1
+LinesBefore=0
+}
+
+// Rule 5
+# T= T_DO
+{
+LinesAfter=1
+}
+
+// Rule 6
+# T= T_WHILE_OPEN_BRACKET, T_IF_OPEN_BRACKET
+{
+SpacesBefore=1
+SpacesAfter=0
+LinesBefore=0
+LinesAfter=0
+}
+
+// Rule 7
+# T= T_WHILE_CLOSE_BRACKET, T_IF_CLOSE_BRACKET  TA= !T_TERMINATOR
+{
+SpacesBefore=0
+LinesBefore=0
+LinesAfter=1
+}
+
+// Rule 8
+# T= T_ELSE TA= T_IF
+{
+LinesAfter=0
+SpacesAfter=1
+}
+
+
+// Rule 9
+# T= T_ELSE
+{
+LinesBefore=1
+}
+
+// Rule 10
+# T= T_ELSE TA= !T_IF
+{
+LinesAfter=1
+}
+
+// Rule 11
+# T= T_FUNCTION_OPEN_BRACKET
+{
+SpacesAfter=0
+SpacesBefore=0
+LinesAfter=0
+}
+
+// Rule 12
+# T= T_FUNCTION_CLOSE_BRACKET  TA= !T_TERMINATOR
+{
+LinesBefore=0
+SpacesBefore=0
+LinesAfter=1
+}
+
+// Rule 13
+# T= T_RETURN TA= !T_TERMINATOR
+{
+SpacesAfter=1
+}
+
+// Rule 14
+# T= T_BREAK, T_CONTINUE, T_BLOCK_CLOSE_BRACE, T_STRUCT_CLOSE_BRACE,
+     T_SWITCH_CLOSE_BLOCK, T_ENUM_CLOSE_BRACE
+{
+LinesBefore=1
+}
+
+// Rule 15
+# TB= T_FUNCTION_CLOSE_BRACKET, T_RETURN, T_BREAK, T_CONTINUE, T_CLOSE_SBRACKET,
+      T_POSTFIX_OPERATOR, T_EXPR_CLOSE_BRACKET, T_STRUCT, T_IDENTIFIER,
+      T_CHAR, T_NUMBER, T_STRING, T_FUNCTION_CALL_CLOSE_BRACKET, T_TYPE_CLOSE_BRACKET,
+ T_INDEX_CLOSE, T_ENUM_CLOSE_BRACE, T_LABEL_NAME, T_GOTO,
+      T_TERMINATOR T= T_TERMINATOR
+{
+SpacesBefore=0
+}
+
+// Rule 16
+# T= T_INIT_LIST_CLOSE
+{
+SpacesBefore=1 || LinesBefore=1
+}
+
+// Rule 17
+# T= T_STRUCT_OPEN_BRACE, T_SWITCH_OPEN_BLOCK, T_ENUM_OPEN_BRACE
+{
+LinesBefore=1
+LinesAfter=1
+}
+
+// Rule 18
+# T= T_BLOCK_CLOSE_BRACE TA= T_ELSE
+{
+LinesAfter=1
+}
+
+// Rule 19
+# T= T_BLOCK_CLOSE_BRACE TA= T_BLOCK_CLOSE_BRACE
+{
+LinesAfter=1
+}
+
+// Rule 20
+# T= T_OPEN_SBRACKET, T_EXPR_OPEN_BRACKET, T_TYPE_POINTER, T_TYPE_OPEN_BRACKET
+{
+SpacesAfter=0
+}
+
+// Rule 21
+# T= T_INIT_LIST_OPEN
+{
+SpacesAfter=1 || LinesAfter=1
+}
+
+// Rule 22
+# T= T_CLOSE_SBRACKET, T_EXPR_CLOSE_BRACKET, T_TYPE_CLOSE_BRACKET,
+     T_SWITCH_CLOSE_BRACKET
+{
+SpacesBefore=0
+}
+
+// Rule 23
+# T= T_PREFIX_OPERATOR TB= T_BINARY_OPERATOR, T_ASSIGN
+{
+SpacesBefore=1
+}
+
+// Rule 24
+# T= T_POSTFIX_OPERATOR TA= T_BINARY_OPERATOR, T_ASSIGN
+{
+SpacesAfter=1
+}
+
+// Rule 25
+# T= T_BINARY_OPERATOR, T_ASSIGN
+{
+SpacesBefore=1 || LinesBefore=1
+SpacesAfter=1 || LinesAfter=1
+}
+
+// Rule 26
+# T= T_TYPE_MODIFIER
+{
+SpacesAfter=1
+}
+
+// Rule 27
+# T= T_STRUCT, T_IDENTIFIER, T_ENUM
+{
+MaxLength=30
+BeginingIsNot=_
+CanBe_=true
+FirstSymbolRegister=lower
+}
+
+// Rule 28
+# T= T_FUNCTION_CALL_OPEN_BRACKET
+{
+SpacesAfter=0
+LinesAfter=0
+SpacesBefore=0
+}
+
+// Rule 29
+# T= T_FUNCTION_CALL_CLOSE_BRACKET
+{
+SpacesBefore=0
+LinesBefore=0
+}
+
+// Rule 30
+# T= T_SWITCH_OPEN_BRACKET
+{
+SpacesBefore=1
+SpacesAfter=0
+}
+
+// Rule 31
+# T= T_CASE, T_GOTO
+{
+LinesBefore=1
+SpacesAfter=1
+}
+
+// Rule 32
+# T= T_CASE_COLON
+{
+SpacesBefore=0
+LinesAfter=1
+}
+
+// Rule 33
+# T= T_DEFAULT
+{
+SpacesAfter=0
+LinesBefore=1
+}
+
+// Indents
+// Rule 34
+# T= T_FILE_BEGIN, T_FILE_END TA= !T_FOR_OPEN_BRACKET
+{
+IndentType=0
+}
+
+// Rule 35
+# T= T_BLOCK_OPEN_BRACE
+{
+IndentType=1
+}
+
+// Rule 36
+# T= T_STRUCT_OPEN_BRACE, T_ENUM_OPEN_BRACE
+{
+IndentType=2
+}
+
+// Rule 37
+# T= T_STRUCT_CLOSE_BRACE, T_BLOCK_CLOSE_BRACE TA= !T_ELSE
+{
+IndentType=3
+}
+
+// Rule 38
+# T= T_BLOCK_CLOSE_BRACE TA= T_ELSE
+{
+IndentType=4
+}
+
+// Rule 39
+# T= T_ENUM_CLOSE_BRACE
+{
+IndentType=5
+}
+
+// Rule 40
+# T= T_SWITCH_OPEN_BLOCK
+{
+IndentType=6
+}
+
+// Rule 41
+# T= T_CASE, T_DEFAULT
+{
+IndentType=7
+}
+
+// Rule 42
+# T= T_CASE_COLON, T_COMMA_VAR_DELIMITER
+{
+IndentType=8
+}
+
+// Rule 43
+# T= T_SWITCH_CLOSE_BLOCK
+{
+IndentType=9
+}
+
+// Rule 44
+# T= T_WHILE_CLOSE_BRACKET, T_FOR_CLOSE_BRACKET
+{
+IndentType=10
+}
+
+// Rule 45
+# T= T_IF_CLOSE_BRACKET
+{
+IndentType=15
+}
+
+// Rule 46
+# T= T_ELSE TA= !T_IF
+{
+IndentType=10
+}
+
+// Rule 47
+# T= T_ELSE TA= T_IF
+{
+IndentType=8
+}
+
+// Rule 48
+# T= T_IF
+{
+IndentType=11
+}
+
+// Rule 49
+# T= T_TERMINATOR TA= !T_ELSE
+{
+IndentType=12
+}
+
+// Rule 50
+# T= T_TERMINATOR TA= T_ELSE
+{
+IndentType=13
+}
+
+// Rule 51
+# T= T_NO TA= !T_FILE_BEGIN
+{
+IndentType=14
+}
+
+// Rule 52
+# T= T_FOR_CLOSE_BRACKET TA= T_TERMINATOR
+{
+LinesAfter=0
+}
+
+// Rule 53
+# T= T_FOR_CLOSE_BRACKET TA= !T_TERMINATOR
+{
+LinesAfter=1
+}
+
+// Rule 54
+# T= T_WHILE_CLOSE_BRACKET, T_IF_CLOSE_BRACKET  TA= T_TERMINATOR
+{
+SpacesBefore=0
+LinesBefore=0
+LinesAfter=0
+}
+
+// Rule 55
+# T= T_COMMA_OPERATOR
+{
+SpacesAfter=1 || LinesAfter=1
+SpacesBefore=0
+}
+
+// Rule 56
+# T= T_COMMA_VAR_DELIMITER
+{
+SpacesAfter=1 || LinesAfter=1
+SpacesBefore=0
+}
+
+// Rule **
+// T= T_TERMINATOR TA= !T_FOR_CLOSE_BRACKET, !T_FILE_END
+{
+LinesAfter=>0
+}
+
+// Rule 57
+# T= T_IDENTIFIER TA= T_IDENTIFIER
+{
+SpacesAfter=1 || LinesAfter=1
+}
+
+// Rule 58
+# T= T_MEMBER_OPERATOR
+{
+SpacesAfter=0
+SpacesBefore=0
+}
+
+// Rule 59
+# T= T_FOR_TERMINATOR TA= T_FOR_TERMINATOR
+{
+SpacesAfter=1
+}
+
+// Rule 60
+# T= T_TERMINATOR
+{
+LinesBefore=0
+}
+
+// Rule 61
+# T= T_TYPE_CLOSE_BRACKET TA= T_TYPE_OPEN_BRACKET
+{
+SpacesAfter=0 || LinesAfter=1
+}
+
+// Rule 62
+# T= T_BLOCK_OPEN_BRACE TB= T_FOR_CLOSE_BRACKET, T_FUNCTION_CLOSE_BRACKET,
+  T_IF_CLOSE_BRACKET, T_SWITCH_CLOSE_BRACKET, T_WHILE_CLOSE_BRACKET
+{
+LinesBefore=1
+LinesAfter=1
+}
+
+// Rule 63
+# T= T_MACRO
+{
+Register=upper
+}
+
+// Rule 64
+# T= T_IDENTIFIER
+{
+Register=lower
+}
+
+// Rule 63
+# T= T_NO
+{
+MixSpacesTabsAllowed=false
+}
+
+// Rule 64
+# T= T_MACRO
+{
+IndentType=0
+}
