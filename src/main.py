@@ -7,10 +7,10 @@ import Tests
 import Text
 from time import perf_counter
 
-MY_VERSION = "0.6.0"
+MY_VERSION = "0.6.8"
 PASSED = "\x1b[1;32;40mPASSED\033[0m"
 FAILED = "\x1b[1;31;40mFAILED\033[0m"
-ERROR = "\x1b[1;31;40mERROR\033[0m"
+ERROR  = "\x1b[1;31;40mERROR\033[0m"
 
 def verbosePrint(tests:list, ver_code, print_all:bool=None):
     for num, test in enumerate(tests.tests_list):
@@ -41,7 +41,7 @@ def result_print(test_data:dict, quite:bool, verbose_ec:bool=False, verbose_true
 
 def init_tests(args):
     if args.version:
-        print(f"The current version is {MY_VERSION}. Exiting.")
+        print(f"Current version is {MY_VERSION}. Exiting.")
         sys.exit(0)
 
     if args.debug:
@@ -59,7 +59,15 @@ def init_tests(args):
 
 
     if test_data["BUILD"] == PASSED:
-        tests = Tests.unittest(compiledpath, testfilepath, quite_ecode=args.ecode_sensetive, test_type=args.type, key=args.key)
+        tests = Tests.unittest(compiledpath, 
+                               testfilepath,
+                               quite_ecode=args.ecode_sensetive,
+                               test_type=args.type,
+                               key=args.key,
+                               args=args.args,
+                               dbg=args.debug
+                              )
+
         test_data["TESTS"] = tests
 
     result_print(test_data, args.quite, args.ecode_sensetive, args.print_all)
@@ -81,13 +89,14 @@ def main():
     parser = argparse.ArgumentParser(description=f"TestSystem {MY_VERSION}.\nMade by Kirill for my purposes and maybe someone else.", add_help=True, prog="Test system")
     subparser = parser.add_subparsers()
 
+
     test = subparser.add_parser("test", help="execute file and check if it corrects with tests.")
     test.add_argument("-t", "--testpath", help="This is path to test txt file.", default="./tests.txt", type=str)
     test.add_argument("-d", "--wdir", help="This is path to your project.", default="./", type=str)
     test.add_argument("--style", help="Check programm with bmstu style utility", action="store_true")
     test.add_argument("-q", "--quite", help="print less info, real data and test data and etc.", action="store_true")
     test.add_argument("--debug", help="Print debug info (you should use it only for debug purposes)", action="store_true")
-    test.add_argument("--type", help="What type of output tests you use: int, str. Default = int. \
+    test.add_argument("--type", help="What type of output tests you use: int, str, float. Default = int. \
                                       You also must input key for --key to parse test file correctly", default="int")
     test.add_argument("--key", help="Key for str type of tests. Default key: `Result:`", default="Result:", type=str)
     test.add_argument("--ecode_sensetive", help="Checking certains exit code. \
@@ -97,10 +106,12 @@ def main():
     test.add_argument("-v", "--version", help="print version and exit", action="store_true")
     test.add_argument("--list", help="List of files to compile", nargs="+", default="main.c")
     test.add_argument("--compiler", help="what compiler should test system use", default="gcc")
+    test.add_argument("--args", help="What args should system use to execute compiled programm (argc argv)", type=str, default="")
     test.set_defaults(func=init_tests)
 
     args = parser.parse_args()
     args.func(args)
+
     # try:
     #     args.func(args)
     # except Exception as e:

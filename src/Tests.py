@@ -61,6 +61,10 @@ class TestList():
 
 
 def style_test(root:str, cpath:str, isdbg:bool=False):
+    """
+    Init bmstu test
+    return colored result such as FAILED or PASSED
+    """
     workdir = os.path.join(root, "styleutil/")
 
     if isdbg:
@@ -73,29 +77,64 @@ def style_test(root:str, cpath:str, isdbg:bool=False):
     style = sb.call([workdir + "CodeChecker", "--rules", workdir + "Rules.txt", cpath])
     result = FAILED if style else PASSED
     return result
+
+def get_data_from_string(string, data_type, key=None):
+    """
+    Getting data from string, type can be either int or float or str.
+    Key is basically start of necessary string. 
+    Key is need only when we parse strings from executrion file
+    output
+    """
+    data = []
+
+    if data_type in ("int", "float"):
+        data = Text.get_numbers(string, type_=data_type)
+
+    elif data_type == "str":
+        if key is None:
+            data = Text.get_strings_from_tests(string)
+        else:
+            data = Text.get_strings_from_exec(string, key)
+
+    return data
     
 
-def unittest(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None, key=None):
+def unittest(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None, key=None, args=None, dbg=False):
+    """
+    test_type - can be int, str, float depending 
+    on what type of data we use
+
+    quite_code - if true we check only exit status
+    if false we checking specific exit code
+    such as we write in test file #exitcode 1
+    programm returned 2, so result of test - FAILED
+
+    key - this attribute is optional and you should use it 
+    only if you parsing strings from programm's output. 
+    Basycally this is string's begin
+
+    Testing file. First of all, parsing givet test file, 
+    then we executing file with all tests,
+    creating class object where we can find results
+    and then returning it
+    """
     test_data = Text.parse_test_file(test_path)
     number_of_tests = len(test_data)
 
     test_list = []
     
     for i in range(len(test_data)):
-        real_data = exec_file(exec_path, test_data[i]["input"], ftype=test_type, key=key)
+        real_data = exec_file(exec_path, data=test_data[i]["input"], ftype=test_type, key=key, args=args, dbg=dbg)
 
-        if test_type == "int":
-            test_output = Text.get_numbers(test_data[i]["output"])
-        elif test_type == "str":
-            test_output = Text.get_strings_from_tests(test_data[i]["output"])
+        test_output = get_data_from_string(test_data[i]["output"], test_type)
 
         test_exitcode = int(test_data[i]["exitcode"])
 
         if not quite_ecode:
             # If quite_ecode == True we dont mansion on specific exit value
             # We interested only in exit statue - it can be either passed or failed
-            real_data["exitcode"] = real_data["exitcode"] > 0
-            test_exitcode = test_exitcode > 0
+            real_data["exitcode"] = abs(real_data["exitcode"]) > 0
+            test_exitcode = abs(test_exitcode) > 0
 
         test = Test(real_data["coll_data"], 
                     test_output, 
@@ -108,26 +147,34 @@ def unittest(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None
     Tests = TestList(test_list)
     return Tests
 
-def exec_file(path:str, data=None, ftype="int", key=None) -> dict:
+def exec_file(path:str, data=None, ftype="int", key=None, args=None, dbg=False) -> dict:
     '''
-    path to exec. file
-    type: "int" or "str"
-    data: string of given values to execution file
-    return: typed val from stdout
+    Executing file with given args, and reading programm's 
+    output, collecting it and then returning
     '''
+
+    if dbg:
+        print("------EXECUTING FILE------")
+        print(f"[DBG] PATH: {path}")
+        print(f"[DBG] ARGS: {args}")
+        print(f"[DBG] DATA: {data}")
 
     pr_vals = {"coll_data": None, "exitcode": 0}
-    pr = sb.run([path], capture_output=True, encoding="utf-8", input=data)
-    
-    if ftype == "int":
-        pr_vals["coll_data"] = Text.get_numbers(pr.stdout)
+    pr = sb.run([path, args], capture_output=True, encoding="utf-8", input=data)
 
-    elif ftype == "str":
-        pr_vals["coll_data"] = Text.get_strings_from_exec(pr.stdout, key)
+    if dbg:
+        print("[DBG] STDOUT:\n", pr.stdout)
+
+    pr_vals["coll_data"] = get_data_from_string(pr.stdout, ftype, key)
 
     pr_vals["exitcode"] = pr.returncode
 
+    if dbg:
+        print(f"[DBG] collected data from file: {pr_vals}")
+        print("--------------------------")
+
     return pr_vals
+
 
 def compile(wdir, flist, compiler="gcc-9", oname:str=None, keys:tuple=None, suppress=False, debug=False):
     '''
@@ -140,7 +187,6 @@ def compile(wdir, flist, compiler="gcc-9", oname:str=None, keys:tuple=None, supp
     
     RESULT = PASSED
     
-    
     for file in flist:
         keys.insert(0, os.path.join(wdir, file))
 
@@ -148,7 +194,7 @@ def compile(wdir, flist, compiler="gcc-9", oname:str=None, keys:tuple=None, supp
     
     if suppress:
         pass
-        #keys.insert(2, " 2> /dev/null")
+        # keys.insert(2, " 2> /dev/null")
     keys.extend(["-o", oname])
 
     if debug:

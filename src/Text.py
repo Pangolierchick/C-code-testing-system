@@ -1,5 +1,16 @@
 import os
 
+def isfloat(string:str) -> bool:
+    """
+    input potentioal float or int number as string. Return true if 
+    string can be converted to float or int
+    """
+    try:
+        float(string)
+        return True
+    except ValueError:
+        return False
+
 def getTitle(test:str) -> str:
     """
     getting str like #test TITLE
@@ -62,7 +73,7 @@ def parse_test_file(path:str):
 def get_strings_from_tests(string:str) -> list:
     string_list = []
     for word in string.split():
-        if word != "None":
+        if str(word):
             string_list.append(word)
     return string_list
 
@@ -75,17 +86,23 @@ def get_strings_from_exec(string:str, keyword):
     return out_list
 
 
-def get_numbers(string:str) -> list:
+
+
+def get_numbers(string:str, type_="int") -> list:
     """
     get string and finds from it number
     """
     
     num_list = []
     for word in string.split():
-        if word.isdigit():
-            num_list.append(int(word))
-
+        if type_ == "int":
+            if word.isdigit():
+                num_list.append(int(word))
+        elif type_ == "float":
+            if isfloat(word):
+                num_list.append(float(word))
     return num_list
+
 
 def isexist(path:str) -> bool:
     return os.path.isfile(path)
