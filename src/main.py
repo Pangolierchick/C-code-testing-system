@@ -2,12 +2,13 @@ import sys
 import os
 import argparse
 import subprocess as sb
+from time import perf_counter
 
 import Tests
 import Text
-from time import perf_counter
+import Bash
 
-MY_VERSION = "0.7.0"
+MY_VERSION = "0.7.9"
 PASSED = "\x1b[1;32;40mPASSED\033[0m"
 FAILED = "\x1b[1;31;40mFAILED\033[0m"
 ERROR  = "\x1b[1;31;40mERROR\033[0m"
@@ -81,6 +82,22 @@ def init_tests(args):
         end = perf_counter()
         print(f"[DBG] Elapsed time is {end - start:.3}s")
     
+    if args.create_script:
+        print("Creating script")
+        path = Bash.create_script(t=args.testpath,
+                                d=args.wdir,
+                                style=args.style,
+                                q=args.quite,
+                                debug=args.debug,
+                                type=args.type,
+                                key=args.key,
+                                ecode_sensetive=args.ecode_sensetive,
+                                print_all=args.print_all,
+                                v=args.version,
+                                list=args.list,
+                                compiler=args.compiler)
+        print(f"Script created ({path})")
+    
 
 
 def main():
@@ -104,6 +121,7 @@ def main():
     test.add_argument("-v", "--version", help="print version and exit", action="store_true")
     test.add_argument("--list", help="List of files to compile", nargs="+", default="main.c")
     test.add_argument("--compiler", help="what compiler should test system use", default="gcc")
+    test.add_argument("--create_script", help="This flag turning on creation of bash script after programm's run.", action="store_true")
     test.set_defaults(func=init_tests)
 
     args = parser.parse_args()
