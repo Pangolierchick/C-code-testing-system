@@ -7,7 +7,7 @@ import Tests
 import Text
 from time import perf_counter
 
-MY_VERSION = "0.6.8"
+MY_VERSION = "0.7.0"
 PASSED = "\x1b[1;32;40mPASSED\033[0m"
 FAILED = "\x1b[1;31;40mFAILED\033[0m"
 ERROR  = "\x1b[1;31;40mERROR\033[0m"
@@ -27,7 +27,6 @@ def verbosePrint(tests:list, ver_code, print_all:bool=None):
             print(f"Expected values: {test.test_values}")
             print(f"Real exit status: {rstatus}")
             print(f"Expected exit status: {tstatus}")
-
 
 def result_print(test_data:dict, quite:bool, verbose_ec:bool=False, verbose_truetest:bool=None):
     build = test_data['BUILD']
@@ -64,7 +63,6 @@ def init_tests(args):
                                quite_ecode=args.ecode_sensetive,
                                test_type=args.type,
                                key=args.key,
-                               args=args.args,
                                dbg=args.debug
                               )
 
@@ -106,7 +104,6 @@ def main():
     test.add_argument("-v", "--version", help="print version and exit", action="store_true")
     test.add_argument("--list", help="List of files to compile", nargs="+", default="main.c")
     test.add_argument("--compiler", help="what compiler should test system use", default="gcc")
-    test.add_argument("--args", help="What args should system use to execute compiled programm (argc argv)", type=str, default="")
     test.set_defaults(func=init_tests)
 
     args = parser.parse_args()

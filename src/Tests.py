@@ -99,7 +99,7 @@ def get_data_from_string(string, data_type, key=None):
     return data
     
 
-def unittest(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None, key=None, args=None, dbg=False):
+def unittest(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None, key=None, dbg=False):
     """
     test_type - can be int, str, float depending 
     on what type of data we use
@@ -113,7 +113,7 @@ def unittest(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None
     only if you parsing strings from programm's output. 
     Basycally this is string's begin
 
-    Testing file. First of all, parsing givet test file, 
+    Testing file. First of all, parsing given test file, 
     then we executing file with all tests,
     creating class object where we can find results
     and then returning it
@@ -124,6 +124,11 @@ def unittest(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None
     test_list = []
     
     for i in range(len(test_data)):
+        try:
+            args = test_data[i]["args"]
+        except KeyError:
+            args = ""
+
         real_data = exec_file(exec_path, data=test_data[i]["input"], ftype=test_type, key=key, args=args, dbg=dbg)
 
         test_output = get_data_from_string(test_data[i]["output"], test_type)

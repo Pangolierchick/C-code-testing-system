@@ -25,7 +25,7 @@ def parse_test_block(text, pos):
     for line in range(pos + 1, len(text)):
         if text[line].find("#") != -1:
             if text[line].find("#test") != -1:
-                if len(test_dict) != 3:
+                if len(test_dict) not in (3, 4):
                     return None
                 return test_dict
             
@@ -35,7 +35,7 @@ def parse_test_block(text, pos):
         if key is not None:
             test_dict[key] = test_dict.get(key, "") + text[line].strip() + " "
     
-    if len(test_dict) != 3:
+    if len(test_dict) not in (3, 4):
         return None
     
     return test_dict
@@ -49,7 +49,6 @@ def clear_text(file_list):
         line += 1
     return file_list
         
-
 
 def parse_test_file(path:str):
     tests_list = []
@@ -73,7 +72,7 @@ def parse_test_file(path:str):
 def get_strings_from_tests(string:str) -> list:
     string_list = []
     for word in string.split():
-        if str(word):
+        if word != "None":
             string_list.append(word)
     return string_list
 
