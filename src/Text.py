@@ -95,8 +95,10 @@ def get_numbers(string:str, type_="int") -> list:
     num_list = []
     for word in string.split():
         if type_ == "int":
-            if word.isdigit():
+            try:
                 num_list.append(int(word))
+            except:
+                pass
         elif type_ == "float":
             if isfloat(word):
                 num_list.append(float(word))

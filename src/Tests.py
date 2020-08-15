@@ -81,9 +81,9 @@ def style_test(root:str, cpath:str, isdbg:bool=False):
 def get_data_from_string(string, data_type, key=None):
     """
     Getting data from string, type can be either int or float or str.
-    Key is basically start of necessary string. 
-    Key is need only when we parse strings from executrion file
-    output
+    Key is basically starts with necessary string. 
+    Key is need only when we parse strings from execution file
+    output (not from test.txt)
     """
     data = []
 
@@ -126,6 +126,7 @@ def unittest(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None
     for i in range(len(test_data)):
         try:
             args = test_data[i]["args"]
+            # print(f"ARGS {args}")
         except KeyError:
             args = ""
 
@@ -165,10 +166,14 @@ def exec_file(path:str, data=None, ftype="int", key=None, args=None, dbg=False) 
         print(f"[DBG] DATA: {data}")
 
     pr_vals = {"coll_data": None, "exitcode": 0}
-    pr = sb.run([path, args], capture_output=True, encoding="utf-8", input=data)
+
+    run_path_args = [path] + [i for i in args.split()]
+
+    pr = sb.run(run_path_args, capture_output=True, encoding="utf-8", input=data)
 
     if dbg:
         print("[DBG] STDOUT:\n", pr.stdout)
+        print(f"[DBG] ftype {ftype}, key {key}")
 
     pr_vals["coll_data"] = get_data_from_string(pr.stdout, ftype, key)
 

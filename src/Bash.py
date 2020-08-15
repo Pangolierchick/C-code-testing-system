@@ -28,7 +28,7 @@ def create_script(**kwargs):
     compiler = "--compiler " + kwargs["compiler"]
 
     # ===== bool =====
-    check_for_exit_code = "--ecode_senstive" if kwargs["ecode_sensetive"] else ""
+    check_for_exit_code = "--ecode_sensetive" if kwargs["ecode_sensetive"] else ""
     print_all_inf = "--print_all" if kwargs["print_all"] else ""
     is_style_check = "--style" if kwargs["style"] else ""
     quite = "--q" if kwargs["q"] else ""
