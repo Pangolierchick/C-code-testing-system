@@ -23,7 +23,7 @@ def verbosePrint(tests:list, ver_code, print_all:bool=None):
                 rstatus = f"({test.real_exit_status} : {rstatus})"
                 tstatus = f"({test.test_exit_status} : {tstatus})"
 
-            print(f"\t\x1b[1;35;40mTEST {test.title}\033[0m\t\t\t\t{PASSED if test.test_status else FAILED}")
+            print(f"\t\x1b[1;35;40mTEST {test.title:30}\033[0m\t\t\t\t{PASSED if test.test_status else FAILED:^10}")
             print(f"Real values: {test.real_values}")
             print(f"Expected values: {test.test_values}")
             print(f"Real exit status: {rstatus}")

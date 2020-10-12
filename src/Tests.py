@@ -159,15 +159,15 @@ def exec_file(path:str, data=None, ftype="int", key=None, args=None, dbg=False) 
     output, collecting it and then returning
     '''
 
+    run_path_args = [path] + [i for i in args.strip().split()]
     if dbg:
         print("------EXECUTING FILE------")
         print(f"[DBG] PATH: {path}")
-        print(f"[DBG] ARGS: {args}")
+        print(f"[DBG] ARGS: {run_path_args}")
         print(f"[DBG] DATA: {data}")
 
     pr_vals = {"coll_data": None, "exitcode": 0}
 
-    run_path_args = [path] + [i for i in args.split()]
 
     pr = sb.run(run_path_args, capture_output=True, encoding="utf-8", input=data)
 
