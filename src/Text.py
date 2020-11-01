@@ -1,4 +1,5 @@
 import os
+import re
 
 def isfloat(string:str) -> bool:
     """
@@ -71,6 +72,7 @@ def parse_test_file(path:str):
 
 def get_strings_from_tests(string:str) -> list:
     string_list = []
+    
     for word in string.split():
         if word != "None":
             string_list.append(word)
@@ -79,6 +81,7 @@ def get_strings_from_tests(string:str) -> list:
 
 def get_strings_from_exec(string:str, keyword):
     out_list = []
+
     for word in string.split("\n"):
         if word.find(keyword) != -1:
             out_list.extend(word.replace(keyword, "").strip().split())
@@ -118,6 +121,36 @@ def isCfile(path:str) -> bool:
         return False
     
     name, ext = path.split(".")
-    if ext == "c":
-        return True
-    return False
+    
+    return ext == "c"
+
+
+'''
+    a b c 'aaa c' 'aaa dd'
+'''
+def split_args(args):
+    """
+    func for gettign words from string
+    for execution's arguments purposes
+    """
+    words = []
+    quoted_words = []
+
+    quoted = re.compile('"([^"]+)"')
+    for value in quoted.findall(args):
+        quoted_words.append(value)
+    
+    new_str = args
+
+    for i in quoted_words:
+        new_str = re.sub('"[^"]+"', '', new_str)
+
+    for i in new_str.split():
+        words.append(i)
+    
+    words.extend(quoted_words)
+    
+    return words
+
+
+

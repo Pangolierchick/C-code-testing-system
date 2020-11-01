@@ -159,7 +159,8 @@ def exec_file(path:str, data=None, ftype="int", key=None, args=None, dbg=False) 
     output, collecting it and then returning
     '''
 
-    run_path_args = [path] + [i for i in args.strip().split()]
+    run_path_args = [path] + Text.split_args(args)
+
     if dbg:
         print("------EXECUTING FILE------")
         print(f"[DBG] PATH: {path}")
