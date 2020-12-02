@@ -99,7 +99,7 @@ def get_data_from_string(string, data_type, key=None):
     return data
     
 
-def unittest(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None, key=None, dbg=False):
+def run_tests(exec_path:str, test_path:str, test_type:str="int", quite_ecode=None, key=None, dbg=False):
     """
     test_type - can be int, str, float depending 
     on what type of data we use
@@ -187,14 +187,14 @@ def exec_file(path:str, data=None, ftype="int", key=None, args=None, dbg=False) 
     return pr_vals
 
 
-def compile(wdir, flist, compiler="gcc-9", oname:str=None, keys:tuple=None, suppress=False, debug=False):
+def compile(wdir, flist, compiler="gcc-10", oname:str=None, keys:tuple=None, suppress=False, debug=False):
     '''
     compiling file with given args
     return PASSED or FAILED depending on build result
     '''
 
     if keys is None:
-        keys = ["-Wall", "-Wextra", "-pedantic", "-Werror"]
+        keys = ["-Wall", "-Wextra", "-pedantic", "-I", "./inc"]
     
     RESULT = PASSED
     

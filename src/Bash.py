@@ -67,7 +67,7 @@ def create_script(**kwargs):
     script_path = "./init_tests"
 
     with open(script_path, "w") as script:
-        script.write('#usr/bin/bash\n')
+        script.write('#!/bin/bash\n')
         script.write("#This is auto-generated script. Do not modify it\n")
         script.write("#due to it will regenerate in next execution of main test script\n")
         script.write('#Made by pangolierchick.\n')

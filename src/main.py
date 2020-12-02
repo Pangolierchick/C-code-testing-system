@@ -33,10 +33,10 @@ def result_print(test_data:dict, quite:bool, verbose_ec:bool=False, verbose_true
     build = test_data['BUILD']
     print(f"BUILD\t\t........\t\t{build}")
     if build != FAILED:
-        unittests = test_data['TESTS']
-        print(f"TESTS\t\t........\t\t{unittests.test_status} ({unittests.getSuccessful()} : {unittests.getLen()})")
-        if ((unittests.test_status == FAILED and not quite) or verbose_truetest):
-            verbosePrint(unittests, verbose_ec, print_all=verbose_truetest)
+        func_tests = test_data['TESTS']
+        print(f"TESTS\t\t........\t\t{func_tests.test_status} ({func_tests.getSuccessful()} : {func_tests.getLen()})")
+        if ((func_tests.test_status == FAILED and not quite) or verbose_truetest):
+            verbosePrint(func_tests, verbose_ec, print_all=verbose_truetest)
 
 
 def init_tests(args):
@@ -59,7 +59,7 @@ def init_tests(args):
 
 
     if test_data["BUILD"] == PASSED:
-        tests = Tests.unittest(compiledpath, 
+        tests = Tests.run_tests(compiledpath, 
                                testfilepath,
                                quite_ecode=args.ecode_sensetive,
                                test_type=args.type,
