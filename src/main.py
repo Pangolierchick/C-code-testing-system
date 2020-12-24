@@ -10,6 +10,7 @@ import Bash
 
 MY_VERSION = "0.7.9"
 PASSED = "\x1b[1;32;40mPASSED\033[0m"
+SKIPPED = "\x1b[1;33;40mSKIPPED\033[0m"
 FAILED = "\x1b[1;31;40mFAILED\033[0m"
 ERROR  = "\x1b[1;31;40mERROR\033[0m"
 
@@ -18,7 +19,7 @@ def verbosePrint(tests:list, ver_code, print_all:bool=None):
         if print_all or not test.test_status: # Here we either printing all test or only failed tests
             rstatus = "FAILED" if test.real_exit_status else "SUCCESS"
             tstatus = "FAILED" if test.test_exit_status else "SUCCESS"
-            
+
             if ver_code:
                 rstatus = f"({test.real_exit_status} : {rstatus})"
                 tstatus = f"({test.test_exit_status} : {tstatus})"
@@ -45,7 +46,8 @@ def init_tests(args):
         sys.exit(0)
 
     if args.debug:
-        print("[DBG] given file list: ", *args.list)       
+        print("[DBG] given file list: ", *args.list)
+        print("[DBG] path to execution: ", args.exec)
         start = perf_counter()
     test_data = {"BUILD": FAILED}
 
@@ -55,11 +57,14 @@ def init_tests(args):
     compiledpath = os.path.join(work_dir, "test_build")
     rootpath = os.path.split(os.path.dirname(sys.argv[0]))[0]
 
-    test_data["BUILD"] = Tests.compile(work_dir, args.list, oname=compiledpath, debug=args.debug, compiler=args.compiler)
+    if args.exec is None:
+        test_data["BUILD"] = Tests.compile(work_dir, args.list, oname=compiledpath, debug=args.debug, compiler=args.compiler)
+    else:
+        compiledpath = os.path.join(work_dir, args.exec)
+        test_data["BUILD"] = SKIPPED
 
-
-    if test_data["BUILD"] == PASSED:
-        tests = Tests.run_tests(compiledpath, 
+    if test_data["BUILD"] in (PASSED, SKIPPED):
+        tests = Tests.run_tests(compiledpath,
                                testfilepath,
                                quite_ecode=args.ecode_sensetive,
                                test_type=args.type,
@@ -81,7 +86,7 @@ def init_tests(args):
     if args.debug:
         end = perf_counter()
         print(f"[DBG] Elapsed time is {end - start:.3}s")
-    
+
     if args.create_script:
         print("Creating script")
         path = Bash.create_script(t=args.testpath,
@@ -97,7 +102,9 @@ def init_tests(args):
                                 list=args.list,
                                 compiler=args.compiler)
         print(f"Script created ({path})")
-    
+
+    sys.exit(not tests.totalResult())
+
 
 
 def main():
@@ -122,6 +129,7 @@ def main():
     test.add_argument("--list", help="List of files to compile", nargs="+", default="main.c")
     test.add_argument("--compiler", help="what compiler should test system use", default="gcc")
     test.add_argument("--create_script", help="This flag turning on creation of bash script after programm's run.", action="store_true")
+    test.add_argument("--exec", help="Path to the execution file", default=None)
     test.set_defaults(func=init_tests)
 
     args = parser.parse_args()

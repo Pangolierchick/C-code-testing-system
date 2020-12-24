@@ -187,7 +187,7 @@ def exec_file(path:str, data=None, ftype="int", key=None, args=None, dbg=False) 
     return pr_vals
 
 
-def compile(wdir, flist, compiler="gcc-10", oname:str=None, keys:tuple=None, suppress=False, debug=False):
+def compile(wdir, flist, compiler="gcc", oname:str=None, keys:tuple=None, suppress=False, debug=False):
     '''
     compiling file with given args
     return PASSED or FAILED depending on build result
